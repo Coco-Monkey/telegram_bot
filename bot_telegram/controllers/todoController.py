@@ -17,7 +17,18 @@ class todoController:
     @staticmethod
     async def list_todos(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not todo_list:
-            await update.message.reply_text("No hay tareas pendientes.")
+            await update.message.reply_text("No hay tareas todavia")
         else:
             tasks = "\n".join([f"{i+1}. {todo.title}" for i, todo in enumerate(todo_list)])
             await update.message.reply_text(f"Tareas pendientes:\n{tasks}")
+
+
+    @staticmethod
+    async def check_todo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        index = int(context.args[0])
+        if (index < 1) or (index > len(todo_list)):
+            await update.message.reply_text("ERROR: esa tarea no existe, por favor ingrese un numero valido")
+        elif todo_list[index-1]:
+            await update.message.reply_text(f"Tarea: \"{todo_list[index-1].title}\" completada!")
+            todo_list.pop(index-1)
+            await update.message.reply_text(f"Lista de tareas actualizada:\n" + "\n".join([f"{i+1}. {todo.title}" for i, todo in enumerate(todo_list)]))
