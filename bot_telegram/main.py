@@ -4,7 +4,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 from controllers.todoController import todoController
 
-TOKEN = "8612239577:AAFefHtmVZdPo301FCgESNEvCNDcGYojzhw" #Llave del bot de telegram
+TOKEN = "" #Llave del bot de telegram
 
     
 #comando para crear la apliacion
