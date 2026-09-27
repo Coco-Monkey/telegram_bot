@@ -10,13 +10,14 @@ class todoController:
 
     @staticmethod
     async def say_hi(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await update.message.reply_text("Hola mi amor, los comandos disponibles son:\n"
+        await update.message.reply_text("Hola humano, los comandos disponibles son:\n"
                                                 "/start - Inicia el bot y muestra un mensaje de bienvenida\n"
                                                 "/add <tarea> - Agrega una nueva tarea a la lista\n"
                                                 "/list - Muestra todas las tareas pendientes\n"
                                                 "/check <numero> - Marca una tarea como completada\n"
                                                 "/clear - Elimina todas las tareas de la lista\n"
-                                                "/pop <numero> - Elimina una tarea especifica de la lista")
+                                                "/pop <numero> - Elimina una tarea especifica de la lista\n"
+                                                "/update <numero> <nueva tarea> - Actualiza el titulo de una tarea especifica\n")
 
 
 
@@ -46,6 +47,21 @@ class todoController:
 
 
 
+    #actualizar tareas
+    @staticmethod
+    async def update_todo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        index = int(context.args[0])
+        command = update.message.text.split()[1]
+        new_title = "".join(update.message.text.split(command)[1:])
+        if index < 1 or index > len(todo_list):
+            await update.message.reply_text("ERROR: esa tarea no existe, por favor ingrese un numero valido")
+        else:
+            todo_list[index-1].title = new_title
+            await update.message.reply_text(f"Tarea {index} actualizada a: {new_title}")
+            await todoController.list_todos(update, context) #concatenacion de funciones/controladores para mostrar la lista de tareas despues de actualizar una tarea
+
+
+
     #marcar una tarea como completada
     @staticmethod
     async def check_todo(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -54,23 +70,16 @@ class todoController:
             await update.message.reply_text("ERROR: esa tarea no existe, por favor ingrese un numero valido")
         todo_list[index-1].set_completed()
         await update.message.reply_text(f"Tarea: \"{todo_list[index-1].title}\" completada!")
+        await todoController.list_todos(update, context) #concatenacion de funciones/controladores para mostrar la lista de tareas despues de marcar una como completada
 
 
 
     #borrar todas las tareas
     @staticmethod
     async def delete_todo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        #borrar una tarea especifica
-        #if context.args:
-            #index = int(context.args[0])
-            #if (index < 1) or (index > len(todo_list)):
-                #await update.message.reply_text("ERROR: esa tarea no existe, por favor ingrese un numero valido")
-            #else:
-            #    deleted_task = todo_list.pop(index-1)
-         #       await update.message.reply_text(f"Tarea: \"{deleted_task.title}\" eliminada!")
-        #else:
         todo_list.clear()
         await update.message.reply_text("Todas las tareas han sido eliminadas")
+
 
 
     #borrar una tarea especifica
@@ -83,3 +92,6 @@ class todoController:
             else:
                 deleted_task = todo_list.pop(index-1)
                 await update.message.reply_text(f"Tarea: \"{deleted_task.title}\" eliminada!")
+                await todoController.list_todos(update, context)
+
+
