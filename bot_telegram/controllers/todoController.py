@@ -53,10 +53,11 @@ class todoController:
         index = int(context.args[0])
         command = update.message.text.split()[1]
         new_title = "".join(update.message.text.split(command)[1:])
-        if index < 1 or index > len(todo_list):
+        if (index < 1) or (index > len(todo_list) or (index == 0)):
             await update.message.reply_text("ERROR: esa tarea no existe, por favor ingrese un numero valido")
         else:
             todo_list[index-1].title = new_title
+            todo_list[index-1].is_completed = False
             await update.message.reply_text(f"Tarea {index} actualizada a: {new_title}")
             await todoController.list_todos(update, context) #concatenacion de funciones/controladores para mostrar la lista de tareas despues de actualizar una tarea
 
@@ -66,11 +67,12 @@ class todoController:
     @staticmethod
     async def check_todo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         index = int(context.args[0])
-        if (index < 1) or (index > len(todo_list)):
+        if (index < 1) or (index > len(todo_list) or (index == 0)):
             await update.message.reply_text("ERROR: esa tarea no existe, por favor ingrese un numero valido")
-        todo_list[index-1].set_completed()
-        await update.message.reply_text(f"Tarea: \"{todo_list[index-1].title}\" completada!")
-        await todoController.list_todos(update, context) #concatenacion de funciones/controladores para mostrar la lista de tareas despues de marcar una como completada
+        else:
+            todo_list[index-1].is_completed = True
+            await update.message.reply_text(f"Tarea: \"{todo_list[index-1].title}\" completada!")
+            await todoController.list_todos(update, context) #concatenacion de funciones/controladores para mostrar la lista de tareas despues de marcar una como completada
 
 
 
