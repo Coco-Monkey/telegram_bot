@@ -17,7 +17,8 @@ class todoController:
                                                 "/check <numero> - Marca una tarea como completada\n"
                                                 "/clear - Elimina todas las tareas de la lista\n"
                                                 "/pop <numero> - Elimina una tarea especifica de la lista\n"
-                                                "/update <numero> <nueva tarea> - Actualiza el titulo de una tarea especifica\n")
+                                                "/update <numero> <nueva tarea> - Actualiza el titulo de una tarea especifica\n"
+                                                "/uncheck <numeros> - Desmarca una tarea")
 
 
 
@@ -97,3 +98,18 @@ class todoController:
                 await todoController.list_todos(update, context)
 
 
+    
+    #Desmarcar tarea
+    @staticmethod
+    async def uncheck_todo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        if context.args:
+            index = int(context.args[0])
+            if (index < 1) or (index > len(todo_list) or (index == 0)):
+                await update.message.reply_text("ERROR: esa tarea no existe, por favor ingrese un numero valido")
+            else:
+                uncheck = todo_list[index-1]
+                uncheck.is_completed = False
+                await update.message.reply_text(f"Tarea: \"{uncheck.title}\" desmarcada")
+                await todoController.list_todos(update, context)
+
+ 

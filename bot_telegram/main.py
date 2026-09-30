@@ -17,5 +17,6 @@ application.add_handler(CommandHandler('check', todoController.check_todo))
 application.add_handler(CommandHandler('clear', todoController.delete_todo))
 application.add_handler(CommandHandler('pop', todoController.pop))
 application.add_handler(CommandHandler('update', todoController.update_todo))
+application.add_handler(CommandHandler('uncheck', todoController.uncheck_todo))
 
 application.run_polling(allowed_updates=Update.ALL_TYPES) 
